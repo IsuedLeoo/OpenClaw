@@ -59,15 +59,21 @@ pub fn run() {
                     }
                     "start_agent" => {
                         let state = app.state::<AppState>();
-                        let _ = state.runtime.start(Some(app));
+                        if let Err(err) = state.runtime.start(Some(app)) {
+                            log::error!("Failed to start runtime from tray: {}", err);
+                        }
                     }
                     "stop_agent" => {
                         let state = app.state::<AppState>();
-                        let _ = state.runtime.stop(Some(app));
+                        if let Err(err) = state.runtime.stop(Some(app)) {
+                            log::error!("Failed to stop runtime from tray: {}", err);
+                        }
                     }
                     "quit" => {
                         let state = app.state::<AppState>();
-                        let _ = state.runtime.stop(None);
+                        if let Err(err) = state.runtime.stop(None) {
+                            log::warn!("Error stopping runtime on quit: {}", err);
+                        }
                         app.exit(0);
                     }
                     _ => {}
